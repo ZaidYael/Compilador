@@ -26,15 +26,14 @@ public class compiladorController {
     @FXML private Button btnGuardar;
     @FXML private Button btnCompilar;
 
-    @FXML public void initialize() {
+    @FXML 
+    public void initialize() {
         codigoTextArea.setParagraphGraphicFactory(LineNumberFactory.get(codigoTextArea));
 
         codigoTextArea.textProperty().addListener((obs, oldText, newText) -> {
             codigoTextArea.setStyleSpans(0, computeHighlighting(newText));
         });
     }
-
-
 
     private static final String[] KEYWORDS = new String[] {
             "YeahBuddy", "SkinnyB", "showMeThat", "second",
@@ -60,17 +59,15 @@ public class compiladorController {
     }
 
     @FXML
-    private  void abrirArchivo(){
+    private void abrirArchivo() {
         FileChooser fileChooser = new FileChooser();
         fileChooser.setTitle("Abrir archivo de código");
 
-        // Opcional: filtros para que elija solo archivos de texto o específicos
         fileChooser.getExtensionFilters().addAll(
                 new FileChooser.ExtensionFilter("Archivos de texto", "*.txt"),
                 new FileChooser.ExtensionFilter("Archivos fuente", "*.gym")
         );
 
-        // Muestra el selector de archivos
         File archivoSeleccionado = fileChooser.showOpenDialog(codigoTextArea.getScene().getWindow());
 
         if (archivoSeleccionado != null) {
@@ -82,29 +79,39 @@ public class compiladorController {
             }
         }
     }
-        @FXML
-        private void guardarArchivo() {
-            FileChooser fileChooser = new FileChooser();
-            fileChooser.setTitle("Guardar archivo de código");
-            fileChooser.getExtensionFilters().add(
-                    new FileChooser.ExtensionFilter("Archivos .gym", "*.gym")
-            );
 
-            File archivoGuardar = fileChooser.showSaveDialog(codigoTextArea.getScene().getWindow());
+    @FXML
+    private void guardarArchivo() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Guardar archivo de código");
+        fileChooser.getExtensionFilters().add(
+                new FileChooser.ExtensionFilter("Archivos .gym", "*.gym")
+        );
 
-            if (archivoGuardar != null) {
-                try {
-                    // Aseguramos que tenga la extensión .gym
-                    String filePath = archivoGuardar.getAbsolutePath();
-                    if (!filePath.endsWith(".gym")) {
-                        archivoGuardar = new File(filePath + ".gym");
-                    }
+        File archivoGuardar = fileChooser.showSaveDialog(codigoTextArea.getScene().getWindow());
 
-                    Files.writeString(archivoGuardar.toPath(), codigoTextArea.getText());
-                } catch (IOException e) {
-                    e.printStackTrace();
+        if (archivoGuardar != null) {
+            try {
+                String filePath = archivoGuardar.getAbsolutePath();
+                if (!filePath.endsWith(".gym")) {
+                    archivoGuardar = new File(filePath + ".gym");
                 }
+
+                Files.writeString(archivoGuardar.toPath(), codigoTextArea.getText());
+            } catch (IOException e) {
+                e.printStackTrace();
             }
         }
-
     }
+
+    @FXML
+    private void compilarCodigo() {
+        String codigo = codigoTextArea.getText();
+        Gymterpreter.interpreter(codigo);
+    }
+
+    @FXML
+    private void nuevoArchivo() {
+        codigoTextArea.clear();
+    }
+}
