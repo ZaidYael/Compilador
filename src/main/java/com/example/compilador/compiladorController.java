@@ -3,11 +3,15 @@ package com.example.compilador;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.stage.FileChooser;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
 import org.fxmisc.richtext.model.StyleSpans;
 import org.fxmisc.richtext.model.StyleSpansBuilder;
 
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -55,5 +59,52 @@ public class compiladorController {
         return spansBuilder.create();
     }
 
-}
+    @FXML
+    private  void abrirArchivo(){
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.setTitle("Abrir archivo de código");
 
+        // Opcional: filtros para que elija solo archivos de texto o específicos
+        fileChooser.getExtensionFilters().addAll(
+                new FileChooser.ExtensionFilter("Archivos de texto", "*.txt"),
+                new FileChooser.ExtensionFilter("Archivos fuente", "*.gym")
+        );
+
+        // Muestra el selector de archivos
+        File archivoSeleccionado = fileChooser.showOpenDialog(codigoTextArea.getScene().getWindow());
+
+        if (archivoSeleccionado != null) {
+            try {
+                String contenido = Files.readString(archivoSeleccionado.toPath());
+                codigoTextArea.replaceText(contenido);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+        @FXML
+        private void guardarArchivo() {
+            FileChooser fileChooser = new FileChooser();
+            fileChooser.setTitle("Guardar archivo de código");
+            fileChooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Archivos .gym", "*.gym")
+            );
+
+            File archivoGuardar = fileChooser.showSaveDialog(codigoTextArea.getScene().getWindow());
+
+            if (archivoGuardar != null) {
+                try {
+                    // Aseguramos que tenga la extensión .gym
+                    String filePath = archivoGuardar.getAbsolutePath();
+                    if (!filePath.endsWith(".gym")) {
+                        archivoGuardar = new File(filePath + ".gym");
+                    }
+
+                    Files.writeString(archivoGuardar.toPath(), codigoTextArea.getText());
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+
+    }

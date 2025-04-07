@@ -24,8 +24,8 @@
         <HBox GridPane.rowIndex="0"  spacing="10" alignment="CENTER_LEFT">
             <children>
                 <Button fx:id="btnNuevo" text="Nuevo" styleClass="Btn"/>
-                <Button fx:id="btnGuardar" text="Guardar" styleClass="Btn"/>
-                <Button fx:id="btnAbrir" text="Abrir" styleClass="Btn"/>
+                <Button fx:id="btnGuardar" text="Guardar" styleClass="Btn" onAction="#guardarArchivo"/>
+                <Button fx:id="btnAbrir" text="Abrir" styleClass="Btn" onAction="#abrirArchivo"/>
                 <Button fx:id="btnCompilar" text="Compilar" styleClass="Btn"/>
             </children>
         </HBox>
