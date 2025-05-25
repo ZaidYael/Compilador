@@ -1,3 +1,5 @@
+package com.example.compilador;
+
 import java.util.HashMap;
 import java.util.Map;
 import java.util.regex.Matcher;
@@ -5,32 +7,36 @@ import java.util.regex.Pattern;
 
 public class Gymterpreter {
     private static final Map<String, Object> variables = new HashMap<>();
+    private static final StringBuilder salida = new StringBuilder();
 
-    public static void interpreter(String code) {
+    public static String interpreter(String code) {
+        salida.setLength(0); // limpiar salida previa
+
         if (!code.startsWith("YeahBuddy") || !code.endsWith("SkinnyB")) {
-            System.out.println("Gymterpreter requiere iniciar y terminar con YeahBuddy y SkinnyB respectivamente");
-            return;
+            salida.append("Gymterpreter requiere iniciar y terminar con YeahBuddy y SkinnyB respectivamente\n");
+            return salida.toString();
         }
-        
+
         String content = code.substring("YeahBuddy".length(), code.length() - "SkinnyB".length()).trim();
         String[] lines = content.split(";\\s*");
 
         for (String line : lines) {
             if (line.trim().isEmpty()) continue;
-            procesarLinea(line.trim());
+            salida.append(procesarLinea(line.trim()));
         }
+        return salida.toString();
     }
 
-    private static void procesarLinea(String line) {
+    private static String procesarLinea(String line) {
         if (line.startsWith("showMeThat(") && line.endsWith(")")) {
             String varName = line.substring("showMeThat(".length(), line.length() - 1).trim();
             Object value = variables.get(varName);
             if (value != null) {
-                System.out.println(value);
+                salida.append(value).append("\n");
             } else {
-                System.out.println("Variable no definida: " + varName);
+                salida.append("Variable no definida: ").append(varName).append("\n");
             }
-            return;
+            return salida.toString();
         }
 
         if (line.startsWith("second(") && line.endsWith(")")) {
@@ -42,15 +48,16 @@ public class Gymterpreter {
                     int end = Integer.parseInt(parts[1].trim());
                     int step = Integer.parseInt(parts[2].trim());
                     for (int i = start; i <= end; i += step) {
-                        System.out.println(i);
+                        salida.append(i);
                     }
+                    salida.append("\n");
                 } catch (NumberFormatException e) {
-                    System.out.println("Parametros no validos");
+                    salida.append("Parametros no validos\n");
                 }
             } else {
-                System.out.println("se requieren 3 parametros, inicio, final y pasos");
+                salida.append("se requieren 3 parametros, inicio, final y pasos\n");
             }
-            return;
+            return salida.toString();
         }
 
         Pattern pattern = Pattern.compile("(light|weight|baby)\\s+(\\w+)\\s*=\\s*(.+?)\\s*([+\\-*/])\\s*(.+)");
@@ -72,15 +79,15 @@ public class Gymterpreter {
                         break;
                     case "weight":
                         if (!operator.equals("+")) {
-                            System.out.println("operador no valido para strings, solo se permite '+'");
+                            salida.append("operador no valido para strings, solo se permite '+'\n");
                         }
                         variables.put(name, buscar(value1, String.class) + buscar(value2, String.class));
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("error linea: " + line + " - " + e.getMessage());
+                salida.append("error linea: ").append(line).append(" - ").append(e.getMessage()).append("\n");
             }
-            return;
+            return salida.toString();
         }
 
         Pattern patternSimple = Pattern.compile("(light|weight|baby|yup|uuuu)\\s+(\\w+)\\s*=\\s*(.+)");
@@ -108,17 +115,18 @@ public class Gymterpreter {
                         if (value.length() > 0) {
                             variables.put(name, value.charAt(0));
                         } else {
-                            System.out.println("Error: valor vacío para tipo uuuu");
+                            salida.append("Error: valor vacío para tipo uuuu\n");
                         }
                         break;
                 }
             } catch (Exception e) {
-                System.out.println("error linea: " + line + " - " + e.getMessage());
+                salida.append("error linea: ").append(line).append(" - ").append(e.getMessage()).append("\n");
             }
-            return;
+            return salida.toString();
         }
 
-        System.out.println("error linea: " + line + " - Sintaxis no reconocida");
+        salida.append("error linea: ").append(line).append(" - Sintaxis no reconocida\n");
+        return salida.toString();
     }
 
     @SuppressWarnings("unchecked")
@@ -128,14 +136,17 @@ public class Gymterpreter {
             if (type.isInstance(value)) {
                 return (T) value;
             }
-            System.out.println("Variable no coincide " + buscado + " Se esperaba: " + type.getSimpleName() + ", introducida: " + value.getClass().getSimpleName());
+            salida.append("Variable no coincide ").append(buscado).append(" Se esperaba: ")
+                    .append(type.getSimpleName()).append(", introducida: ")
+                    .append(value.getClass().getSimpleName()).append("\n");
         }
         try {
             if (type == Float.class) return (T) Float.valueOf(buscado);
             if (type == Integer.class) return (T) Integer.valueOf(buscado);
             if (type == String.class) return (T) buscado;
         } catch (Exception e) {
-            System.out.println("error, no se puede convertir: " + buscado + " a " + type.getSimpleName());
+            salida.append("error, no se puede convertir: ").append(buscado).append(" a ")
+                    .append(type.getSimpleName()).append("\n");
         }
         return null;
     }
@@ -147,7 +158,7 @@ public class Gymterpreter {
             case "*": return value1 * value2;
             case "/": return value1 / value2;
             default:
-                System.out.println("operador no valido");
+                salida.append("operador no valido\n");
                 return 0;
         }
     }
@@ -159,7 +170,7 @@ public class Gymterpreter {
             case "*": return value1 * value2;
             case "/": return value1 / value2;
             default:
-                System.out.println("operador no valido");
+                salida.append("operador no valido\n");
                 return 0;
         }
     }

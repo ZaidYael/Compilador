@@ -3,6 +3,7 @@ package com.example.compilador;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import org.fxmisc.richtext.CodeArea;
 import org.fxmisc.richtext.LineNumberFactory;
@@ -25,6 +26,7 @@ public class compiladorController {
     @FXML private Button btnAbrir;
     @FXML private Button btnGuardar;
     @FXML private Button btnCompilar;
+    @FXML private TextArea texto;
 
     @FXML 
     public void initialize() {
@@ -106,9 +108,11 @@ public class compiladorController {
 
     @FXML
     private void compilarCodigo() {
-        String codigo = codigoTextArea.getText();
-        Gymterpreter.interpreter(codigo);
+        String codigo = codigoTextArea.getText(); // Obtiene el código ingresado
+        String resultado = ""+Gymterpreter.interpreter(codigo); // Ejecuta Gymterpreter
+        texto.setText(resultado); // Muestra los resultados y errores en el TextArea
     }
+
 
     @FXML
     private void nuevoArchivo() {

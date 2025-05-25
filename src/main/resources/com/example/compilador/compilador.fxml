@@ -23,10 +23,10 @@
         <!-- Fila 1: Encabezado con HBox -->
         <HBox GridPane.rowIndex="0"  spacing="10" alignment="CENTER_LEFT">
             <children>
-                <Button fx:id="btnNuevo" text="Nuevo" styleClass="Btn"/>
+                <Button fx:id="btnNuevo" text="Nuevo" styleClass="Btn" onAction="#nuevoArchivo"/>
                 <Button fx:id="btnGuardar" text="Guardar" styleClass="Btn" onAction="#guardarArchivo"/>
                 <Button fx:id="btnAbrir" text="Abrir" styleClass="Btn" onAction="#abrirArchivo"/>
-                <Button fx:id="btnCompilar" text="Compilar" styleClass="Btn"/>
+                <Button fx:id="btnCompilar" text="Compilar" styleClass="Btn" onAction="#compilarCodigo"/>
             </children>
         </HBox>
 
@@ -39,7 +39,7 @@
 
 
         <!-- Fila 3: Pie de página -->
-        <TextArea fx:id="consolaTextArea" GridPane.rowIndex="2" promptText="Aquí se mostrarán los mensajes..." editable="false" wrapText="true" styleClass="text-area">
+        <TextArea fx:id="texto" GridPane.rowIndex="2" promptText="Aquí se mostrarán los mensajes..." editable="false" wrapText="true" styleClass="text-area">
             <padding>
                 <Insets top="10" right="10" bottom="10" left="10"/>
             </padding>
