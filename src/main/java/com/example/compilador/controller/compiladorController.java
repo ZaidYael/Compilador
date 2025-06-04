@@ -1,5 +1,10 @@
-package com.example.compilador;
+package com.example.compilador.controller;
 
+import com.example.compilador.functions.Compilar;
+import com.example.compilador.functions.Gymterpreter;
+import com.example.compilador.functions.Parser;
+import com.example.compilador.functions.Tokenizer;
+import com.example.compilador.models.Token;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -15,6 +20,7 @@ import java.io.IOException;
 import java.nio.file.Files;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -108,9 +114,11 @@ public class compiladorController {
 
     @FXML
     private void compilarCodigo() {
-        String codigo = codigoTextArea.getText(); // Obtiene el código ingresado
-        String resultado = ""+Gymterpreter.interpreter(codigo); // Ejecuta Gymterpreter
-        texto.setText(resultado); // Muestra los resultados y errores en el TextArea
+        texto.setText(Gymterpreter.interpreter(codigoTextArea.getText()));
+        Compilar compilar = new Compilar(codigoTextArea);
+        compilar.compilar();
+
+
     }
 
 
