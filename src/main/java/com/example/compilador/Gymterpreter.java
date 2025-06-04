@@ -18,7 +18,7 @@ public class Gymterpreter {
         }
 
         String content = code.substring("YeahBuddy".length(), code.length() - "SkinnyB".length()).trim();
-        String[] lines = content.split(";\\s*");
+        String[] lines = content.split("(?<=\\})|;\\s*");//cambie esto
 
         for (String line : lines) {
             if (line.trim().isEmpty()) continue;
@@ -39,6 +39,55 @@ public class Gymterpreter {
             return salida.toString();
         }
 
+        if (line.startsWith("oneMore(")) {
+            Pattern loopPattern = Pattern.compile("oneMore\\((.+)\\)\\s*\\{(.+)}", Pattern.DOTALL);
+            Matcher loopMatcher = loopPattern.matcher(line);
+            if (loopMatcher.find()) {
+                String condition = loopMatcher.group(1).trim();
+                String body = loopMatcher.group(2).trim();
+                while (Boolean.TRUE.equals(buscar(condition, Boolean.class))) {
+                    String[] bodyLines = body.split(";\\s*");
+                    for (String bodyLine : bodyLines) {
+                        procesarLinea(bodyLine.trim());
+                    }
+                }
+                return "";
+            }
+        }
+
+        if (line.startsWith("naty(")) {//añadi
+            Pattern ifPattern = Pattern.compile("cmon\\((.+)\\)\\s*\\{(.+)}\\s*else\\s*\\{(.+)}", Pattern.DOTALL);
+            Matcher ifMatcher = ifPattern.matcher(line);
+            if (ifMatcher.find()) {
+                String condition = ifMatcher.group(1).trim();
+                String ifBody = ifMatcher.group(2).trim();
+                String elseBody = ifMatcher.group(3).trim();
+                boolean cond = Boolean.TRUE.equals(buscar(condition, Boolean.class));
+                String[] bodyLines = (cond ? ifBody : elseBody).split(";\\s*");
+                for (String bodyLine : bodyLines) {
+                    procesarLinea(bodyLine.trim());
+                }
+                return "";
+            }
+        }
+
+        if (line.startsWith("oneMore(")) {//añadi
+            Pattern loopPattern = Pattern.compile("oneMore\\((.+)\\)\\s*\\{(.+)}", Pattern.DOTALL);
+            Matcher loopMatcher = loopPattern.matcher(line);
+            if (loopMatcher.find()) {
+                String condition = loopMatcher.group(1).trim();
+                String body = loopMatcher.group(2).trim();
+                while (Boolean.TRUE.equals(buscar(condition, Boolean.class))) {
+                    String[] bodyLines = body.split(";\\s*");
+                    for (String bodyLine : bodyLines) {
+                        procesarLinea(bodyLine.trim());
+                    }
+                }
+                return "";
+            }
+        }
+
+        
         if (line.startsWith("second(") && line.endsWith(")")) {
             String parameters = line.substring("second(".length(), line.length() - 1).trim();
             String[] parts = parameters.split(",");
