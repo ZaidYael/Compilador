@@ -6,6 +6,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Gymterpreter {
+    private static final Map<String, Metodo> metodos = new HashMap<>();
     private static final Map<String, Object> variables = new HashMap<>();
     private static final StringBuilder salida = new StringBuilder();
 
@@ -39,6 +40,44 @@ public class Gymterpreter {
             return salida.toString();
         }
 
+        if (line.startsWith("routine")) {
+            Pattern defPattern = Pattern.compile("routine\\s+(\\w+)\\((.*?)\\)\\s*\\{(.+)}", Pattern.DOTALL);
+            Matcher defMatcher = defPattern.matcher(line);
+            if (defMatcher.find()) {
+                String nombre = defMatcher.group(1).trim();
+                List<String> parametros = Arrays.asList(defMatcher.group(2).split("\\s*,\\s*"));
+                String cuerpo = defMatcher.group(3).trim();
+                metodos.put(nombre, new Metodo(parametros, cuerpo));
+                return "";
+            }
+        }
+
+        Pattern callPattern = Pattern.compile("(\w+)\((.*?)\)");
+        Matcher callMatcher = callPattern.matcher(line);
+        if (callMatcher.matches()) {
+            String nombre = callMatcher.group(1).trim();
+            String[] args = callMatcher.group(2).split("\s*,\s*");
+            Metodo metodo = metodos.get(nombre);
+            if (metodo == null) throw new RuntimeException("Método no definido: " + nombre);
+            if (args.length != metodo.parametros.size()) throw new RuntimeException("Número de argumentos incorrecto");
+
+            Map<String, Object> contextoAnterior = new HashMap<>(variables);
+
+            for (int i = 0; i < args.length; i++) {
+                variables.put(metodo.parametros.get(i), buscar(args[i], Object.class));
+            }
+
+            String[] bodyLines = metodo.cuerpo.split(";\s*");
+            for (String bodyLine : bodyLines) {
+                procesarLinea(bodyLine.trim());
+            }
+
+            variables.clear();
+            variables.putAll(contextoAnterior);
+            return "";
+        }
+
+        
         if (line.startsWith("oneMore(")) {
             Pattern loopPattern = Pattern.compile("oneMore\\((.+)\\)\\s*\\{(.+)}", Pattern.DOTALL);
             Matcher loopMatcher = loopPattern.matcher(line);
@@ -211,5 +250,15 @@ public class Gymterpreter {
                 salida.append("operador no valido\n");
                 return 0;
         }
+    }
+}
+
+private static class Metodo {
+    List<String> parametros;
+    String cuerpo;
+
+    Metodo(List<String> parametros, String cuerpo) {
+        this.parametros = parametros;
+        this.cuerpo = cuerpo;
     }
 }
