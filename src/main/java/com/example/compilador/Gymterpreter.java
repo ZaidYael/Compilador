@@ -56,7 +56,7 @@ public class Gymterpreter {
         }
 
         if (line.startsWith("naty(")) {//añadi
-            Pattern ifPattern = Pattern.compile("cmon\\((.+)\\)\\s*\\{(.+)}\\s*else\\s*\\{(.+)}", Pattern.DOTALL);
+            Pattern ifPattern = Pattern.compile("naty\\((.+)\\)\\s*\\{(.+)}\\s*else\\s*\\{(.+)}", Pattern.DOTALL);
             Matcher ifMatcher = ifPattern.matcher(line);
             if (ifMatcher.find()) {
                 String condition = ifMatcher.group(1).trim();
