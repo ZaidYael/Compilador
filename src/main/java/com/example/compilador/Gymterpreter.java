@@ -118,23 +118,19 @@ public class Gymterpreter {
             String operator = matcher.group(4).trim();
             String value2 = matcher.group(5).trim();
 
-            try {
-                switch (type) {
-                    case "light":
-                        variables.put(name, sumaFloat(buscar(value1, Float.class), operator, buscar(value2, Float.class)));
-                        break;
-                    case "baby":
-                        variables.put(name, sumaInt(buscar(value1, Integer.class), operator, buscar(value2, Integer.class)));
-                        break;
-                    case "weight":
-                        if (!operator.equals("+")) {
-                            salida.append("operador no valido para strings, solo se permite '+'\n");
-                        }
-                        variables.put(name, buscar(value1, String.class) + buscar(value2, String.class));
-                        break;
-                }
-            } catch (Exception e) {
-                salida.append("error linea: ").append(line).append(" - ").append(e.getMessage()).append("\n");
+            switch (type) {
+                case "light":
+                    variables.put(name, sumaFloat(buscar(value1, Float.class), operator, buscar(value2, Float.class)));
+                    break;
+                case "baby":
+                    variables.put(name, sumaInt(buscar(value1, Integer.class), operator, buscar(value2, Integer.class)));
+                    break;
+                case "weight":
+                    if (!operator.equals("+")) {
+                        salida.append("operador no valido para strings, solo se permite '+'\n");
+                    }
+                    variables.put(name, buscar(value1, String.class) + buscar(value2, String.class));
+                    break;
             }
             return salida.toString();
         }
@@ -146,31 +142,28 @@ public class Gymterpreter {
             String name = matcherSimple.group(2);
             String value = matcherSimple.group(3).trim();
 
-            try {
-                switch (type) {
-                    case "light":
-                        variables.put(name, Float.parseFloat(value));
-                        break;
-                    case "weight":
-                        variables.put(name, value);
-                        break;
-                    case "baby":
-                        variables.put(name, Integer.parseInt(value));
-                        break;
-                    case "yup":
-                        variables.put(name, Boolean.parseBoolean(value));
-                        break;
-                    case "uuuu":
-                        if (value.length() > 0) {
-                            variables.put(name, value.charAt(0));
-                        } else {
-                            salida.append("Error: valor vacío para tipo uuuu\n");
-                        }
-                        break;
-                }
-            } catch (Exception e) {
-                salida.append("error linea: ").append(line).append(" - ").append(e.getMessage()).append("\n");
+            switch (type) {
+                case "light":
+                    variables.put(name, Float.parseFloat(value));
+                    break;
+                case "weight":
+                    variables.put(name, value);
+                    break;
+                case "baby":
+                    variables.put(name, Integer.parseInt(value));
+                    break;
+                case "yup":
+                    variables.put(name, Boolean.parseBoolean(value));
+                    break;
+                case "uuuu":
+                    if (value.length() > 0) {
+                        variables.put(name, value.charAt(0));
+                    } else {
+                        salida.append("Error: valor vacío para tipo uuuu\n");
+                    }
+                    break;
             }
+            
             return salida.toString();
         }
 
@@ -189,14 +182,10 @@ public class Gymterpreter {
                     .append(type.getSimpleName()).append(", introducida: ")
                     .append(value.getClass().getSimpleName()).append("\n");
         }
-        try {
-            if (type == Float.class) return (T) Float.valueOf(buscado);
-            if (type == Integer.class) return (T) Integer.valueOf(buscado);
-            if (type == String.class) return (T) buscado;
-        } catch (Exception e) {
-            salida.append("error, no se puede convertir: ").append(buscado).append(" a ")
-                    .append(type.getSimpleName()).append("\n");
-        }
+        if (type == Float.class) return (T) Float.valueOf(buscado);
+        if (type == Integer.class) return (T) Integer.valueOf(buscado);
+        if (type == String.class) return (T) buscado;
+      
         return null;
     }
 
