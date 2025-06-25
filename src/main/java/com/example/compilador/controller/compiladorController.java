@@ -1,7 +1,7 @@
 package com.example.compilador.controller;
-
-import com.example.compilador.functions.Compilar;
+    
 import com.example.compilador.functions.Gymterpreter;
+import com.example.compilador.functions.Compilar;
 import com.example.compilador.functions.Parser;
 import com.example.compilador.functions.Tokenizer;
 import com.example.compilador.models.Token;
@@ -114,11 +114,15 @@ public class compiladorController {
 
     @FXML
     private void compilarCodigo() {
-        texto.setText(Gymterpreter.interpreter(codigoTextArea.getText()));
-        Compilar compilar = new Compilar(codigoTextArea);
-        compilar.compilar();
-
-
+        String codigo = codigoTextArea.getText();
+        Tokenizer tokenizer = new Tokenizer(codigo);
+        Parser parser=new Parser(tokenizer.tokenize());
+        String resultado = parser.parse();
+        if (resultado.contains("Error")) {
+            texto.setText(resultado);
+        } else {
+            texto.setText(Gymterpreter.interpreter(codigo)+"\nCodigo Ejecutado con exito");
+        }
     }
 
 

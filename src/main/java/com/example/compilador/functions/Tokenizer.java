@@ -25,7 +25,7 @@ public class Tokenizer {
             scanToken();
         }
 
-        tokens.add(new Token("", Tokens.SKINNY_B, line, current));
+        tokens.add(new Token("", Tokens.EOF, line, current));
         return tokens;
     }
 
@@ -41,6 +41,8 @@ public class Tokenizer {
             case '/': addToken(Tokens.DIVISION); break;
             case '=': addToken(Tokens.ASIGNACION); break;
             case ';': addToken(Tokens.PUNTO_Y_COMA); break;
+            case '{': addToken(Tokens.LLAVE_DER); break;
+            case '}': addToken(Tokens.LLAVE_IZQ); break;
             case '\n': line++; break;
             case ' ':
             case '\r':
@@ -71,6 +73,10 @@ public class Tokenizer {
             case "SkinnyB": addToken(Tokens.SKINNY_B); break;
             case "yup": addToken(Tokens.YUP); break;
             case "uuuu": addToken(Tokens.UUUU); break;
+            case "oneMore": addToken(Tokens.ONEMORE); break;
+            case "naty": addToken(Tokens.NATY); break;
+            case "second": addToken(Tokens.SECOND); break;
+            case "else": addToken(Tokens.ELSE); break;
             case "true":
             case "false":
                 addToken(Tokens.BOOLEANO, text);
